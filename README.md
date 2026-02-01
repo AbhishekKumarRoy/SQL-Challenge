@@ -1,4 +1,4 @@
-# 8-Week-SQL-Challenge
+# SQL-Challenge
 This repository contains the solutions for the case studies present in **[8 Week SQL Challenge by Danny](https://8weeksqlchallenge.com/)**
 
 The solution is in MySQL.
