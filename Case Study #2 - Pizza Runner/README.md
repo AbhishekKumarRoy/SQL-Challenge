@@ -42,9 +42,40 @@ Each of the following case study questions can be answered using a single SQL st
 10. What was the volume of orders for each day of the week?
 
 
-## Data cleaning
-When I first saw the data, I knew it needed some cleaning. I could either alter the existing table or create a new one. 
-Both are valid approaches, but I didn't want to touch the original table, so I created a new, clean table in the same database. 
-This approach keeps the raw data untouched and organized.
+## Data Cleaning & Transformation
+When I first sat down with the raw data, it was clear that a fair bit of "janitor work" was needed before I could actually run any meaningful queries.
 
-For `pizza_recipes` table, I realized the data required cleaning and structural adjustments. To ensure data integrity, I performed 1NF normalization to eliminate multi-valued attributes.
+### My Approach: The "Clean Layer"
+I decided not to touch the original tables. In a real-world production environment, you never want to overwrite your source of truth. Instead, I built a "Clean Layer", a set of new tables that are sanitized, correctly typed, and ready for analysis.
+
+1. Fixing the `customer_orders` Table
+
+   The biggest headache here was the inconsistent use of `'null'` as a string versus actual `NULL` values.
+
+- The Fix: I used `NULLIF` to sweep through the `exclusions` and `extras` columns. Now, whether the data was an empty string or the word `"null"`, it’s stored as a proper database `NULL`.
+
+- Why? This makes it way easier to count how many customers actually requested changes without writing complex `WHERE` clauses.
+
+2. Scrubbing the `runner_orders` Table
+
+   This table was the "messiest." It had units mixed in with numbers (like "20km" or "32 minutes"), which makes math impossible.
+
+- `distance`: I stripped out the `"km"` and whitespace, then cast it to a `DECIMAL`. Now we can actually calculate things like total distance covered.
+
+- `duration`: I did the same for `"mins"` and `"minutes"`, turning them into `INTEGER` values.
+
+- The "Unsigned" Gotcha: MySQL defaults to `BIGINT UNSIGNED` when you create a table from a select statement. To keep the schema clean and predictable, I manually `ALTERED` this back to a standard `INTEGER`.
+
+3. Normalizing `pizza_recipes` (The 1NF Move)
+
+   The original `pizza_recipes` table had a major design flaw: it stored toppings as a comma-separated list (e.g., "1, 2, 3"). This is a nightmare for joins.
+
+- The Transformation: I used a `Recursive CTE` to unnest those strings.
+
+- The Result: I moved the data into First Normal Form (1NF). Each topping now has its own row. This took the table from a "flat list" to a relational structure that can easily join with the `pizza_toppings` table.
+
+4. General Schema Polish
+
+   Finally, I cleaned up the data types for the `pizza_names` and `pizza_toppings` tables.
+
+- Text vs. Varchar: I swapped `TEXT` for `VARCHAR(50)`. Since these are just short names (like "Pepperoni" or "Meatlovers"), `TEXT` is overkill. `VARCHAR` is more efficient for storage and much faster for indexing.
