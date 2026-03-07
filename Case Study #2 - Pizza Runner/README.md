@@ -40,3 +40,11 @@ Each of the following case study questions can be answered using a single SQL st
 8. How many pizzas were delivered that had both exclusions and extras?
 9. What was the total volume of pizzas ordered for each hour of the day?
 10. What was the volume of orders for each day of the week?
+
+
+## Data cleaning
+When I first saw the data, I knew it needed some cleaning. I could either alter the existing table or create a new one. 
+Both are valid approaches, but I didn't want to touch the original table, so I created a new, clean table in the same database. 
+This approach keeps the raw data untouched and organized.
+
+For `pizza_recipes` table, I realized the data required cleaning and structural adjustments. To ensure data integrity, I performed 1NF normalization to eliminate multi-valued attributes.
