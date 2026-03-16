@@ -103,10 +103,10 @@ VALUES
   (11, 'Tomatoes'),
   (12, 'Tomato Sauce');
   
-#-------------------------------------------------- Cleaning Data ----------------------------------------------- 
+-------------------------------------------------- Cleaning Data ----------------------------------------------- 
 USE pizza;
 
-# customer_orders_clean
+-- customer_orders_clean
 CREATE TABLE customer_orders_clean AS
 SELECT 
   order_id,
@@ -118,7 +118,7 @@ SELECT
 
 FROM customer_orders;
 
-# runner_orders_clean
+-- runner_orders_clean
 CREATE TABLE runner_orders_clean AS
 SELECT 
     order_id,
@@ -146,7 +146,7 @@ SELECT
 FROM runner_orders;
 
 
-# pizza_recipes_clean
+-- pizza_recipes_clean
 CREATE TABLE pizza_recipes_clean (
     pizza_id INT,
     topping_id INT
@@ -188,7 +188,7 @@ ALTER TABLE customer_orders_clean
 ADD PRIMARY KEY (order_id, pizza_id);
 
 
-# Adding Foreign Keys
+-- Adding Foreign Key's
 ALTER TABLE customer_orders_clean
 ADD CONSTRAINT fk_pizza
 FOREIGN KEY (pizza_id)
@@ -219,12 +219,11 @@ FOREIGN KEY (topping_id)
 REFERENCES pizza_toppings(topping_id);
 
 
-# MySQL internally converts all UNSIGNED casts to BIGINT UNSIGNED in during create table as select. 
-# So, changing the duration to INTEGER using ALTAR.
+-- MySQL internally converts all UNSIGNED casts to BIGINT UNSIGNED in during create table as select. So, changing the duration to INTEGER using ALTAR.
 ALTER TABLE runner_orders_clean
 MODIFY duration INTEGER;
 
-# Changing the data type from TEXT to VARCHAR. TEXT is used to store large data like articles, post and is slower compared to VARCHAR
+-- Changing the data type from TEXT to VARCHAR. TEXT is used to store large data like articles, post and is slower compared to VARCHAR
 ALTER TABLE pizza_names
 MODIFY pizza_name VARCHAR(50);
 
