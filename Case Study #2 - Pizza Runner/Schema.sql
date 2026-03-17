@@ -1,3 +1,6 @@
+CREATE DATABASE pizza;
+USE pizza;
+
 CREATE TABLE runners (
   `runner_id` INTEGER,
   `registration_date` DATE
