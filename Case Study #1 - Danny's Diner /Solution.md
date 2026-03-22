@@ -3,7 +3,9 @@
 
 ### 1. What is the total amount each customer spent at the restaurant?
 ```sql
-SELECT s.customer_id, SUM(m.price) AS Total_sales
+SELECT
+    s.customer_id,
+    SUM(m.price) AS Total_sales
 FROM sales s
 JOIN menu m ON s.product_id = m.product_id
 GROUP BY s.customer_id;
@@ -18,7 +20,9 @@ GROUP BY s.customer_id;
 
 ### 2. How many days has each customer visited the restaurant?
 ```sql
-SELECT customer_id, COUNT(DISTINCT order_date) AS Time_visited
+SELECT
+    customer_id,
+    COUNT(DISTINCT order_date) AS Time_visited
 FROM sales
 GROUP BY customer_id;
 ```
@@ -32,7 +36,9 @@ GROUP BY customer_id;
 
 ### 3. What was the first item from the menu purchased by each customer?
 ```sql
-SELECT DISTINCT s.customer_id, m.product_name
+SELECT
+    DISTINCT s.customer_id,
+    m.product_name
 FROM sales s
 JOIN menu m ON s.product_id = m.product_id
 WHERE s.order_date IN (
@@ -52,7 +58,9 @@ WHERE s.order_date IN (
 
 ### 4. What is the most purchased item on the menu and how many times was it purchased by all customers?
 ```sql
-SELECT m.product_name, COUNT(m.product_name) AS purchase_count
+SELECT
+    m.product_name,
+    COUNT(m.product_name) AS purchase_count
 FROM sales s
 JOIN menu m ON s.product_id = m.product_id
 GROUP BY m.product_name
@@ -68,19 +76,30 @@ LIMIT 1;
 ### 5. Which item was the most popular for each customer?
 ```sql
 WITH customer_purchases AS (
-    SELECT s.customer_id, m.product_name, COUNT(*) AS product_count
+    SELECT
+        s.customer_id,
+        m.product_name,
+        COUNT(*) AS product_count
     FROM sales s
     JOIN menu m ON s.product_id = m.product_id
-    GROUP BY s.customer_id, m.product_name
+    GROUP BY
+        s.customer_id,
+        m.product_name
 ),
 max_purchases AS (
-    SELECT customer_id, MAX(product_count) AS max_count
+    SELECT
+        customer_id,
+        MAX(product_count) AS max_count
     FROM customer_purchases
     GROUP BY customer_id
 )
-SELECT cp.customer_id, cp.product_name, cp.product_count
+SELECT
+    cp.customer_id,
+    cp.product_name,
+    cp.product_count
 FROM customer_purchases cp
-JOIN max_purchases mp ON cp.customer_id = mp.customer_id AND cp.product_count = mp.max_count;
+JOIN max_purchases mp ON cp.customer_id = mp.customer_id
+    AND cp.product_count = mp.max_count;
 ```
 #### Output
 | customer_id | product_name | product_count |
@@ -94,7 +113,10 @@ JOIN max_purchases mp ON cp.customer_id = mp.customer_id AND cp.product_count = 
 
 ### 6. Which item was purchased first by the customer after they became a member?
 ```sql
-SELECT s.customer_id, s.order_date AS first_order, me.product_name
+SELECT
+    s.customer_id,
+    s.order_date AS first_order,
+    me.product_name
 FROM sales s
 JOIN members m ON s.customer_id = m.customer_id
 JOIN menu me ON s.product_id = me.product_id
@@ -115,7 +137,10 @@ WHERE
 
 ### 7. Which item was purchased just before the customer became a member?
 ```sql
-SELECT s.customer_id, s.order_date AS first_order, me.product_name
+SELECT
+    s.customer_id,
+    s.order_date AS first_order,
+    me.product_name
 FROM sales s
 JOIN members m ON s.customer_id = m.customer_id
 JOIN menu me ON s.product_id = me.product_id
@@ -138,7 +163,10 @@ WHERE
 
 ### 8. What is the total items and amount spent for each member before they became a member?
 ```sql
-SELECT s.customer_id, COUNT(me.product_name) AS total_items, SUM(me.price) AS total_amount_spent
+SELECT
+    s.customer_id,
+    COUNT(me.product_name) AS total_items,
+    SUM(me.price) AS total_amount_spent
 FROM sales s
 JOIN members m ON s.customer_id = m.customer_id
 JOIN menu me ON s.product_id = me.product_id 
